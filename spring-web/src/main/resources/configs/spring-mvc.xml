@@ -16,7 +16,20 @@
 
 	<context:annotation-config />
 	<context:component-scan base-package="smok.springmvc" />
-	<mvc:annotation-driven />
+
+	<!-- xml转码器 -->
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+
+	<!-- 采用注解方式配置MVC -->
+	<mvc:annotation-driven
+		content-negotiation-manager="contentNegotiationManager">
+		<mvc:argument-resolvers>
+			<bean
+				class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
+
+	<!-- 配置静态资源路径 -->
 	<mvc:resources mapping="/styles/**" location="/resources/styles/" />
 	<mvc:resources mapping="/scripts/**" location="/resources/scripts/" />
 	<mvc:resources mapping="/images/**" location="/resources/images/" />
@@ -82,7 +95,19 @@
 			</props>
 		</property>
 	</bean>
-	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
-
+	
+	
+	<bean id="contentNegotiationManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="true" />
+		<property name="favorParameter" value="true" />
+		<property name="defaultContentType" value="text/html" />
+		<property name="mediaTypes">
+			<value>
+				json=application/json
+				xml=application/xml
+			</value>
+		</property>
+	</bean>
 
 </beans>
